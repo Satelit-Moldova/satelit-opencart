@@ -21,7 +21,7 @@ Data: Satelit
 
 ## What it does
 
-**BNM exchange rates.** Sets the value of every store currency BNM publishes (EUR, USD, RON, RUB, UAH, …) from `/v1/rates`. BNM quotes MDL per `nominal` units; the extension converts that to OpenCart's model (the default currency is 1, every other currency is "units per 1 unit of the default"), so it works whatever your default currency is:
+**BNM exchange rates.** Sets the value of every store currency BNM publishes (EUR, USD, RON, RUB, UAH, …) from `/v1/rates`. BNM quotes MDL per `nominal` units. The extension converts that to OpenCart's model (the default currency is 1, every other currency is "units per 1 unit of the default"), so it works whatever your default currency is:
 
 | Default currency | EUR stored as | MDL stored as | USD stored as |
 |---|---|---|---|
@@ -33,12 +33,12 @@ Currencies BNM does not list (GBP in the demo store) are left alone and named in
 It uses each version's own mechanism:
 
 - **OpenCart 4.x**: a currency rate engine (`Extensions > Currency > Satelit (BNM rates)`). Enabling it makes it the store's engine, so OpenCart's **Refresh** button on the currency list, saving a currency, and the built-in `currency` cron task all use BNM rates.
-- **OpenCart 3.0.4+ (tested on 3.0.5.1; 3.0.3.x has no rate engines, see below)**: the same, as an OpenCart 3 currency extension; the Refresh button and "Auto Update Currency" use it.
+- **OpenCart 3.0.4+ (tested on 3.0.5.1; 3.0.3.x has no rate engines, see below)**: the same, as an OpenCart 3 currency extension. The Refresh button and "Auto Update Currency" use it.
 - **All versions**: **Update rates now** in the settings and a cron URL with a secret token (`…&token=…`), which calls the API only when the last rates are older than the TTL.
 
-**Market prices.** A layout module for the product page (Content Top or Content Bottom): it searches Satelit for the product, opens the best match and shows the lowest and median price, the number of shops and the cheapest offer of up to N shops, each with the shop name. Each product can have its own **Satelit search term** (a field added to the product form, Data tab); otherwise its name is used. Prices come in MDL and are shown in the shopper's currency when the store has MDL, otherwise as `lei`.
+**Market prices.** A layout module for the product page (Content Top or Content Bottom): it searches Satelit for the product, opens the best match and shows the lowest and median price, the number of shops and the cheapest offer of up to N shops, each with the shop name. Each product can have its own **Satelit search term** (a field added to the product form, Data tab). Otherwise its name is used. Prices come in MDL and are shown in the shopper's currency when the store has MDL, otherwise as `lei`.
 
-**Admin settings** (`Extensions > Modules > Satelit Moldova`): API key (password field, never shown again, kept when left empty), data language (shopper's language or a fixed one: ro, ru, en, uk), rates TTL, prices TTL, number of shops, status, **Test connection** (plan and credits left, from `/v1/me`, 0 credits), the last rates log line and the cron URL. Admin strings in en-gb, ro-ro and ru-ru; storefront strings in the same three.
+**Admin settings** (`Extensions > Modules > Satelit Moldova`): API key (password field, never shown again, kept when left empty), data language (shopper's language or a fixed one: ro, ru, en, uk), rates TTL, prices TTL, number of shops, status, **Test connection** (plan and credits left, from `/v1/me`, 0 credits), the last rates log line and the cron URL. Admin strings in en-gb, ro-ro and ru-ru. Storefront strings in the same three.
 
 ![Settings page, OpenCart 3.0.5.1](screenshots/opencart3-settings.png)
 
@@ -95,15 +95,15 @@ The cache is the extension's own table, so a product page costs nothing until it
 
 ## Security
 
-- The key is stored in OpenCart settings, only read on the server; the admin form never prints it back, and it is never sent to the storefront.
+- The key is stored in OpenCart settings, only read on the server. The admin form never prints it back, and it is never sent to the storefront.
 - Admin actions use OpenCart's `user_token` and check `modify` permission on the extension (and on `localisation/currency` for "Update rates now").
 - All values from the API are escaped in the templates. The cron URL needs a random 32-character token compared with `hash_equals`.
 
 ## Troubleshooting
 
-- **"key_invalid"** on Test connection: the key is wrong or revoked; make a new one in the [console](https://developer.satelit.md/en/console/).
-- **No block on the product page**: check the module status, that it is in the Product layout, and that the product's search term finds something (the extension caches "no match" for the prices TTL; saving the settings clears that cache).
-- **Rates do not change**: the default currency must be MDL or a currency BNM lists; the log line under "Last update" says what happened. Errors also go to `System > Maintenance > Error Logs` as `Satelit …` lines.
+- **"key_invalid"** on Test connection: the key is wrong or revoked. Make a new one in the [console](https://developer.satelit.md/en/console/).
+- **No block on the product page**: check the module status, that it is in the Product layout, and that the product's search term finds something (the extension caches "no match" for the prices TTL, saving the settings clears that cache).
+- **Rates do not change**: the default currency must be MDL or a currency BNM lists. The log line under "Last update" says what happened. Errors also go to `System > Maintenance > Error Logs` as `Satelit …` lines.
 - **OpenCart 3.0.3.x**: it has no currency rate engines, so use **Update rates now** or the cron URL, and turn off "Auto Update Currency" in `System > Settings > Option` (the feed it used no longer exists).
 - **Upgrading on OpenCart 4**: uninstall both extensions, uninstall and delete the package in `Extensions > Installer`, then upload the new zip.
 
