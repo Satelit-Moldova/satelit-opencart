@@ -1,0 +1,128 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-end">
+        <button type="submit" form="form-module" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-save"></i></button>
+        <a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="card">
+      <div class="card-header"><i class="fa-solid fa-pencil"></i> {{ text_edit }}</div>
+      <div class="card-body">
+        <form id="form-module" action="{{ save }}" method="post" data-oc-toggle="ajax">
+          <div class="row mb-3">
+            <label for="input-api-key" class="col-sm-2 col-form-label">{{ entry_api_key }}</label>
+            <div class="col-sm-10">
+              <div class="input-group">
+                <input type="password" name="module_satelit_api_key" value="" autocomplete="new-password" placeholder="{{ key_saved ? '••••••••••••' : 'sat_live_…' }}" id="input-api-key" class="form-control"/>
+                <button type="button" id="button-test" class="btn btn-info"><i class="fa-solid fa-plug"></i> {{ button_test }}</button>
+              </div>
+              <div id="error-api-key" class="invalid-feedback"></div>
+              <div class="form-text">{% if key_saved %}{{ text_key_saved }} {% endif %}{{ help_api_key }} {{ text_get_key }}</div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label for="input-language" class="col-sm-2 col-form-label">{{ entry_language }}</label>
+            <div class="col-sm-10">
+              <select name="module_satelit_language" id="input-language" class="form-select">
+                {% for code, name in languages %}
+                  <option value="{{ code }}"{% if code == module_satelit_language %} selected{% endif %}>{{ name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>{{ text_rates }}</legend>
+            <p>{{ text_rates_help }} <span class="text-body-secondary">{{ text_attribution }}</span></p>
+            <div class="row mb-3">
+              <label for="input-rates-ttl" class="col-sm-2 col-form-label">{{ entry_rates_ttl }}</label>
+              <div class="col-sm-10">
+                <input type="number" min="1" max="24" name="module_satelit_rates_ttl" value="{{ module_satelit_rates_ttl|e }}" id="input-rates-ttl" class="form-control"/>
+                <div id="error-rates-ttl" class="invalid-feedback"></div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">{{ text_last }}</label>
+              <div class="col-sm-10">
+                <p class="form-control-plaintext" id="satelit-last">{{ last_log ? last_log|e : text_never }}</p>
+                <button type="button" id="button-rates" class="btn btn-primary"><i class="fa-solid fa-rotate"></i> {{ button_rates }}</button>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="input-cron" class="col-sm-2 col-form-label">{{ text_cron }}</label>
+              <div class="col-sm-10">
+                <input type="text" readonly value="{{ cron_url|e }}" id="input-cron" class="form-control" onclick="this.select()"/>
+                <div class="form-text">{{ text_cron_help }}</div>
+                {% if engine_on %}
+                  <div class="form-text text-success">{{ text_engine_on }}</div>
+                {% else %}
+                  <div class="form-text">{{ text_engine_off|format(currency_link) }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ text_market }}</legend>
+            <p>{{ text_layout }}</p>
+            <div class="row mb-3">
+              <label class="col-sm-2 col-form-label">{{ entry_status }}</label>
+              <div class="col-sm-10">
+                <div class="form-check form-switch form-switch-lg">
+                  <input type="hidden" name="module_satelit_status" value="0"/>
+                  <input type="checkbox" name="module_satelit_status" value="1" id="input-status" class="form-check-input"{% if module_satelit_status %} checked{% endif %}/>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="input-prices-ttl" class="col-sm-2 col-form-label">{{ entry_prices_ttl }}</label>
+              <div class="col-sm-10">
+                <input type="number" min="1" max="48" name="module_satelit_prices_ttl" value="{{ module_satelit_prices_ttl|e }}" id="input-prices-ttl" class="form-control"/>
+                <div id="error-prices-ttl" class="invalid-feedback"></div>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label for="input-offers" class="col-sm-2 col-form-label">{{ entry_offers }}</label>
+              <div class="col-sm-10">
+                <input type="number" min="1" max="10" name="module_satelit_offers" value="{{ module_satelit_offers|e }}" id="input-offers" class="form-control"/>
+                <div id="error-offers" class="invalid-feedback"></div>
+              </div>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+function satelitAlert(json) {
+	var ok = json['success'] !== undefined;
+	var box = $('<div class="alert alert-dismissible"><i class="fa-solid"></i> <span></span> <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+	box.addClass(ok ? 'alert-success' : 'alert-danger').find('i').addClass(ok ? 'fa-circle-check' : 'fa-circle-exclamation');
+	box.find('span').text(ok ? json['success'] : json['error']);
+	$('#alert').prepend(box);
+}
+$('#button-test').on('click', function() {
+	var btn = $(this);
+	$.ajax({url: '{{ test }}'.replaceAll('&amp;', '&'), type: 'post', dataType: 'json', data: {module_satelit_api_key: $('#input-api-key').val()},
+		beforeSend: function() { btn.button('loading'); }, complete: function() { btn.button('reset'); },
+		success: satelitAlert, error: function(xhr) { satelitAlert({error: xhr.status + ' ' + xhr.statusText}); }});
+});
+$('#button-rates').on('click', function() {
+	var btn = $(this);
+	$.ajax({url: '{{ rates }}'.replaceAll('&amp;', '&'), type: 'post', dataType: 'json', data: {go: 1},
+		beforeSend: function() { btn.button('loading'); }, complete: function() { btn.button('reset'); },
+		success: function(json) { satelitAlert(json); $('#satelit-last').text(json['success'] || json['error']); },
+		error: function(xhr) { satelitAlert({error: xhr.status + ' ' + xhr.statusText}); }});
+});
+//--></script>
+{{ footer }}

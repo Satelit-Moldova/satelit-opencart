@@ -1,0 +1,7 @@
+{
+  "name": "Satelit Moldova",
+  "description": "BNM exchange rates for the store currencies and market prices from Moldovan shops on product pages, through the Satelit API (api.satelit.md).",
+  "version": "1.0.0",
+  "author": "Satelit",
+  "link": "https://developer.satelit.md/en/docs/"
+}

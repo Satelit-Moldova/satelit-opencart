@@ -1,0 +1,14 @@
+<div class="satelit-market card mb-3">
+  <div class="card-header"><strong>{{ heading_title|e }}</strong> <span class="text-body-secondary">{{ summary|e }}</span></div>
+  <div class="card-body py-2">
+    <p class="small text-body-secondary mb-1">{{ match|e }}</p>
+    <table class="table table-sm mb-1">
+      <tbody>
+        {% for offer in offers %}
+          <tr><td>{{ offer.store|e }}{% if offer.out %} <span class="small text-body-secondary">({{ offer.out|e }})</span>{% endif %}</td><td class="text-end"><strong>{{ offer.price|e }}</strong></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="small text-body-secondary mb-0"><a href="https://satelit.md" target="_blank" rel="noopener">{{ text_source|e }}</a></p>
+  </div>
+</div>

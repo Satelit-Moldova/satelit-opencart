@@ -1,0 +1,14 @@
+<div class="satelit-market panel panel-default">
+  <div class="panel-heading"><strong>{{ heading_title|e }}</strong> <span class="text-muted">{{ summary|e }}</span></div>
+  <div class="panel-body">
+    <p class="small text-muted" style="margin:0 0 6px">{{ match|e }}</p>
+    <table class="table table-condensed" style="margin-bottom:6px">
+      <tbody>
+        {% for offer in offers %}
+        <tr><td>{{ offer.store|e }}{% if offer.out %} <span class="text-muted small">({{ offer.out|e }})</span>{% endif %}</td><td class="text-right"><strong>{{ offer.price|e }}</strong></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="small text-muted" style="margin:0"><a href="https://satelit.md" target="_blank" rel="noopener">{{ text_source|e }}</a></p>
+  </div>
+</div>
